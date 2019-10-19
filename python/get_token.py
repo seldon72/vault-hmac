@@ -11,7 +11,7 @@ pkcs = requests.get('http://169.254.169.254/latest/dynamic/instance-identity/pkc
 payload={}
 payload['pkcs7'] = pkcs.text.replace('\n', '')
 payload['nonce'] = 'HMAC'
-payload['role'] = 'onetech-role'
+payload['role'] = 'DOU-role'
 
 t = requests.post(url, json=payload)
 
