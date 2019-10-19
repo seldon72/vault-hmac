@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 TOKEN=$AWS_TOKEN
-VALUE1=$(base64 <<< $2)
-VALUE2=$(base64 <<< $3)
-VALUE3=$(base64 <<< $4)
+VALUE1=$(base64 <<< $1)
+VALUE2=$(base64 <<< $2)
+VALUE3=$(base64 <<< $3)
 
 grep hmac results.json > validate.txt
 mapfile -t array < validate.txt
