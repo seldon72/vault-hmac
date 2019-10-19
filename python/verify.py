@@ -16,7 +16,8 @@ with open('results.json') as json_file:
 
 payload = []
 for i in range(0,3):
-    payload.append({'input':base64.b64encode(sys.argv[i+1].encode('utf-8')).decode('utf-8'), data[i]})
+    payload.append({'input':base64.b64encode(sys.argv[i+1].encode('utf-8')).decode('utf-8')})
+    payload[i].update(data[i])
 
 verify = requests.post(url, headers={'X-Vault-Token': token}, json={'batch_input': payload})
 
