@@ -24,12 +24,8 @@ curl -X POST -H "X-Vault-Token: $ADMIN_TOKEN" -d '{"access_key":"$AWS_ACCESS_KEY
 
 ## Create Policy DOU-policy
 cat << EOF > DOU-policy.hcl
-path "transit/verify/DOU/*" {
-    capabilities = ["create", "update"]
-}
-
-path "transit/hmac/DOU/*" {
-    capabilities = ["create", "update"]
+{
+  "policy": "# Verify Hash\npath \"transit/verify/DOU/*\"\n{\n  capabilities = [\"create\", \"update\"]\n}\n\n# HMAC Hash\npath \"transit/hmac/DOU/*\"\n{\n  capabilities = [\"create\", \"update\"]\n}"
 }
 EOF
 
