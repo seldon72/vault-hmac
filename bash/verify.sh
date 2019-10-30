@@ -5,23 +5,23 @@ VALUE1=$(base64 <<< $1)
 VALUE2=$(base64 <<< $2)
 VALUE3=$(base64 <<< $3)
 
-grep hmac results.json > validate.txt
-mapfile -t array < validate.txt
+# grep hmac results.json > validate.txt
+# mapfile -t array < validate.txt
 
 cat << EOF > payload.json
 {
     "batch_input": [
       {
         "input": "$VALUE1",
-        ${array[0]}
+        "hmac": $(cat results.json | jq ".[0] | .hmac")
       },
       {
         "input": "$VALUE2",
-        ${array[1]}
+        "hmac": $(cat results.json | jq ".[1] | .hmac")
       },
       {
         "input": "$VALUE3",
-        ${array[2]}
+        "hmac": $(cat results.json | jq ".[2] | .hmac")
       }
     ]
 }
