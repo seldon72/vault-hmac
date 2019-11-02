@@ -8,23 +8,25 @@ VALUE3=$(base64 <<< $3)
 # grep hmac results.json > validate.txt
 # mapfile -t array < validate.txt
 
-cat << EOF > payload.json
-{
-    "batch_input": [
-      {
-        "input": "$VALUE1",
-        "hmac": $(cat results.json | jq ".[0] | .hmac")
-      },
-      {
-        "input": "$VALUE2",
-        "hmac": $(cat results.json | jq ".[1] | .hmac")
-      },
-      {
-        "input": "$VALUE3",
-        "hmac": $(cat results.json | jq ".[2] | .hmac")
-      }
-    ]
-}
+payload="$(cat <<- EOF 
+  {
+      "batch_input": [
+        {
+          "input": "$VALUE1",
+          "hmac": $(cat results.json | jq ".[0] | .hmac")
+        },
+        {
+          "input": "$VALUE2",
+          "hmac": $(cat results.json | jq ".[1] | .hmac")
+        },
+        {
+          "input": "$VALUE3",
+          "hmac": $(cat results.json | jq ".[2] | .hmac")
+        }
+      ]
+  }
 EOF
+)"
 
-curl  -H "X-Vault-Token: $TOKEN" -X POST -d @payload.json -s $VAULT_ADDR/v1/transit/verify/DOU/sha2-512 | jq ".data.batch_results"
+curl  -H "X-Vault-Token: $TOKEN" -X POST -d "$payload" -s $VAULT_ADDR/v1/transit/verify/DOU/sha2-512 | jq ".data.batch_results"
+
