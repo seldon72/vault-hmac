@@ -35,27 +35,33 @@ curl -X POST -H "X-Vault-Token: $ADMIN_TOKEN" -d '{"access_key":"$AWS_ACCESS_KEY
 
 #### Create Policy DOU-policy
 ```bash
-cat << EOF > DOU-policy.hcl
+dou-policy()
 {
-  "policy": "# Verify Hash\npath \"transit/verify/DOU/*\"\n{\n  capabilities = [\"create\", \"update\"]\n}\n\n# HMAC Hash\npath \"transit/hmac/DOU/*\"\n{\n  capabilities = [\"create\", \"update\"]\n}"
-}
+  cat <<- EOF
+  {
+      "policy": "# Verify Hash\npath \"transit/verify/DOU/*\"\n{\n  capabilities = [\"create\", \"update\"]\n}\n\n# HMAC Hash\npath \"transit/hmac/DOU/*\"\n{\n  capabilities = [\"create\", \"update\"]\n}"
+  }
 EOF
+}
 
-curl -X POST -H "X-Vault-Token: $ADMIN_TOKEN" -d @DOU-policy.hcl $VAULT_ADDR/v1/sys/policy/DOU-policy
+curl -X POST -H "X-Vault-Token: $ADMIN_TOKEN" -d "$(dou-policy)" $VAULT_ADDR/v1/sys/policy/DOU-policy
 ```
-#### Crete Role - bind to AWS account, EC2 instance id or AMI id
+#### Crete Role - bind to AWS account (bound_account_id), EC2 instance id (bound_ec2_instance_id) or AMI id (bound_ami_id)
 ```bash
 AWS_ACCOUNT=<AWS account>
 
-cat << EOF > payload.json
+payload()
 {
-    "bound_account_id":"$AWS_ACCOUNT",
-    "auth_type":"ec2",
-    "policies":"DOU-policy"
-}
+  cat <<- EOF
+  {
+      "bound_account_id":"$AWS_ACCOUNT",
+      "auth_type":"ec2",
+      "policies":"DOU-policy"
+  }
 EOF
+}
 
-curl -X POST -H "X-Vault-Token: $ADMIN_TOKEN" -d @payload.json $VAULT_ADDR/v1/auth/aws/role/DOU-role
+curl -X POST -H "X-Vault-Token: $ADMIN_TOKEN" -d "$(payload)" $VAULT_ADDR/v1/auth/aws/role/DOU-role
 ```
 
 ## Generate and Verify HMAC hash on EC2 instance
