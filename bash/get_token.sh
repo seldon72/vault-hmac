@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
-set -x
-# PKCS=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/pkcs7 | tr -d '\n')
-IDENTITY=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/rsa2048 | tr -d '\n')
-SIGNATURE=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/signature | tr -d '\n')
+
+PKCS=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/pkcs7 | tr -d '\n')
 
 payload()
 {
   cat <<- EOF
   {
       "role":"DOU-role",
-      "identity":"$IDENTITY",
-      "signature":"$SIGNATURE",
+      "pkcs7":"$PKCS",
       "nonce":"HMAC"
   }
 EOF
