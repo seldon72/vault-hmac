@@ -7,7 +7,7 @@ export AWSPOLICY=""
 export AWS_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 export AWS_SECRET_KEY=$AWS_ACCESS_KEY_ID
 
-export VLTIP=$(aws ec2 describe-instances --region=$REGION --output text --filters "Name=tag:Role,Values=vault" --query 'Reservations[*].Instances[*].{ExtIP:PublicIpAddress}' | head -1)
+export VLTIP=$(aws ec2 describe-instances --region=$REGION --output text --filters "Name=tag:Role,Values=vault" --query 'Reservations[*].Instances[*].{ExtIP:PublicIpAddress}' | grep -v "None" | head -1)
 export VAULT_ADDR="http://$VLTIP:8200"
 
 export ADMIN_TOKEN=$(cat $TEMPDIR/vault_admin_key.txt)

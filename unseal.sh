@@ -2,7 +2,7 @@
 set -x
 # if [ -z "$1" ]; then export VLTIP=127.0.0.1; else export VLTIP=$1; fi
 export REGION="us-west-1"
-export VLTIP=$(aws ec2 describe-instances --region=$REGION --output text --filters "Name=tag:Role,Values=vault" --query 'Reservations[*].Instances[*].{ExtIP:PublicIpAddress}' | head -1)
+export VLTIP=$(aws ec2 describe-instances --region=$REGION --output text --filters "Name=tag:Role,Values=vault" --query 'Reservations[*].Instances[*].{ExtIP:PublicIpAddress}' | grep -v "None" | head -1)
 export TEMPDIR="."
 export PATH=$PATH:$TEMPDIR
 export UNSEAL="vault operator init -recovery-shares=5 -recovery-threshold=3"
