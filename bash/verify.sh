@@ -8,7 +8,7 @@ VALUE3=$(base64 <<< $3)
 # grep hmac results.json > validate.txt
 # mapfile -t array < validate.txt
 
-payload()
+payload_verify()
 {
   cat <<- EOF
 {
@@ -30,4 +30,4 @@ payload()
 EOF
 }
 
-curl  -H "X-Vault-Token: $TOKEN" -X POST -d "$(payload)" -s $VAULT_ADDR/v1/transit/verify/DOU/sha2-512 | jq ".data.batch_results"
+curl  -H "X-Vault-Token: $TOKEN" -X POST -d "$(payload_verify)" -s $VAULT_ADDR/v1/transit/verify/DOU/sha2-512 | jq ".data.batch_results"
